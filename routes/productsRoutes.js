@@ -6,7 +6,8 @@ import {
     deleteProduct, 
     createProductReview, 
     getTopProducts,
-    createProduct
+    createProduct,
+    updateProductStock
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import checkObjectId from '../middleware/checkObjectId.js';
@@ -24,6 +25,10 @@ router.route('/:id/reviews')
 
 // Get top rated products
 router.get('/top', getTopProducts);
+
+// Add this new route
+router.route('/updateStock')
+    .put(protect, updateProductStock);
 
 // Single product routes with object id validation
 router.route('/:id')

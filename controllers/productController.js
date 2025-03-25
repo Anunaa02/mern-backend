@@ -130,3 +130,26 @@ export const getTopProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({}).sort({ rating: -1 }).limit(3);
     res.json(products);
 });
+
+// @desc    Update product stock
+// @route   PUT /api/products/stock
+// @access  Private/Admin
+export const updateProductStock = asyncHandler(async (req, res) => {
+    const { orderItems } = req.body;
+
+    const updatePromises = orderItems.map(async (item) => {
+        const product = await Product.findById(item.product);
+        if (product) {
+            product.countInStock = Math.max(0, product.countInStock - item.qty);
+            return product.save();
+        }
+    });
+
+    try {
+        await Promise.all(updatePromises);
+        res.json({ message: 'Product stock updated' });
+    } catch (error) {
+        res.status(400);
+        throw new Error('Error updating product stock');
+    }
+});

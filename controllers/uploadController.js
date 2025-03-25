@@ -1,28 +1,51 @@
-const multer = require('multer');
-const path = require('path');
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Configure multer storage
+// Get current directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Set path to front/public/images folder
+const uploadPath = path.join(__dirname, '../../front/public/images');
+
 const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, 'uploads/');
-	},
-	filename: (req, file, cb) => {
-		cb(null, `${Date.now()}-${file.originalname}`);
-	}
+    destination: (req, file, cb) => {
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
 });
 
-// Initialize upload middleware
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+    const filetypes = /jpg|jpeg|png|webp/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
 
-// Controller to handle file upload
-const uploadFile = (req, res) => {
-	if (!req.file) {
-		return res.status(400).json({ message: 'No file uploaded.' });
-	}
-	res.status(200).json({
-		message: 'File uploaded successfully.',
-		fileUrl: `/uploads/${req.file.filename}`
-	});
+    if (extname && mimetype) {
+        cb(null, true);
+    } else {
+        cb(new Error('Images only!'), false);
+    }
 };
 
-module.exports = { upload, uploadFile };
+const upload = multer({ 
+    storage,
+    fileFilter,
+    limits: { fileSize: 50000000 } // 50MB limit
+});
+
+const uploadFile = (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded.' });
+    }
+    
+    const filePath = req.file.filename;
+    res.status(200).json({
+        message: 'File uploaded successfully.',
+        image: `/images/${filePath}` // Changed path to match public URL
+    });
+};
+
+export { upload, uploadFile };
