@@ -17,13 +17,13 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8000;
 
 // Add this middleware to parse JSON bodies
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: /^http:\/\/localhost(:\d+)?$/,
   credentials: true,
 }));
 
