@@ -20,10 +20,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Pull image from DockerHub
-        run: docker pull Anunaa02/mern-backend/:latest
+        run: docker pull Anunaa02/back:latest
       - name: Stop existing container
-        run: docker stop mern-backend || true # Continue if container doesn't exist
+        run: docker stop back || true # Continue if container doesn't exist
       - name: Remove existing container
-        run: docker rm mern-backend || true # Continue if container doesn't exist
+        run: docker rm back || true # Continue if container doesn't exist
       - name: Run Docker container
-        run: docker run -d -p 8000:8000 --name mern-backend -e MONGO_PASS='${{secrets.MONGO_PASS}}' Anunaa02/mern-backend/
+        run: docker run -d -p 8000:8000 --name back -e MONGO_PASS='${{secrets.MONGO_PASS}}' Anunaa02/back
