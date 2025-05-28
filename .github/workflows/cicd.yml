@@ -12,9 +12,9 @@ jobs:
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker image
-        run: docker build -t Anunaa02/mern-backend/ .
+        run: docker build -t Anunaa02/back .
       - name: Publish Docker image
-        run: docker push Anunaa02/mern-backend/:latest    
+        run: docker push Anunaa02/back:latest    
   deploy:
     needs: build
     runs-on: self-hosted
@@ -24,6 +24,6 @@ jobs:
       - name: Stop existing container
         run: docker stop back || true # Continue if container doesn't exist
       - name: Remove existing container
-        run: docker rm back || true # Continue if container doesn't exist
+        run: docker rm back || true # Continue if container doesn't exist hghghg
       - name: Run Docker container
         run: docker run -d -p 8000:8000 --name back -e MONGO_PASS='${{secrets.MONGO_PASS}}' Anunaa02/back
