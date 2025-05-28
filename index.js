@@ -17,7 +17,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
 
 // Add this middleware to parse JSON bodies
 app.use(express.json());
